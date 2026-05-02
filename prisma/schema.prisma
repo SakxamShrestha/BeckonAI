@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Business {
+  id        String     @id @default(cuid())
+  name      String
+  ownerName String
+  type      String
+  createdAt DateTime   @default(now())
+  customers Customer[]
+  slots     Slot[]
+}
+
+model Customer {
+  id            String    @id @default(cuid())
+  businessId    String
+  business      Business  @relation(fields: [businessId], references: [id])
+  name          String
+  phone         String
+  lastVisitDate DateTime?
+  visitCount    Int       @default(0)
+  isNewLead     Boolean   @default(false)
+  offers        Offer[]
+  createdAt     DateTime  @default(now())
+}
+
+model Slot {
+  id         String   @id @default(cuid())
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id])
+  date       DateTime
+  label      String
+  isFilled   Boolean  @default(false)
+  offers     Offer[]
+  createdAt  DateTime @default(now())
+}
+
+model Offer {
+  id           String    @id @default(cuid())
+  customerId   String
+  customer     Customer  @relation(fields: [customerId], references: [id])
+  slotId       String
+  slot         Slot      @relation(fields: [slotId], references: [id])
+  message      String
+  discountCode String
+  status       String    @default("draft")
+  createdAt    DateTime  @default(now())
+  sentAt       DateTime?
+}
