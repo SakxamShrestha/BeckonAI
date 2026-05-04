@@ -207,7 +207,11 @@ export default function ContactPage() {
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link}
-                  href={link === 'Contact' ? '/contact' : '/'}
+                  href={
+                    link === 'Contact' ? '/contact'
+                    : link === 'How it Works' ? '/how-it-works'
+                    : '/'
+                  }
                   className="beckon-nav-link flex items-center gap-1 text-sm font-semibold"
                   style={{ color: link === 'Contact' ? '#3B59FF' : '#666' }}
                 >
