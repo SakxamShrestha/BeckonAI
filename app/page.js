@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { RequestDemoModal } from '@/components/RequestDemoModal'
 import { ArrowRight, CheckCircle } from 'lucide-react'
 
 const BUSINESS_TYPES = [
@@ -20,21 +21,80 @@ const BUSINESS_TYPES = [
 const PROBLEMS = [
   {
     emoji: '💸',
-    title: 'Groupon destroys your brand',
+    title: 'Deal platforms cost you more than a slow day',
     description:
-      "Groupon charges 50% and sends deal-hunters who never come back. You work twice as hard for half the pay — and train customers to only book when discounted.",
+      "Discount marketplaces take up to 50% commission and send deal-hunters who never return. You end up working twice as hard for half the pay — and training customers to wait for a sale.",
   },
   {
     emoji: '📣',
-    title: '"10% off everyone" trains bad habits',
+    title: 'Generic blasts don\'t move the needle',
     description:
-      "Blasting generic discounts to your whole list teaches loyal customers to wait for a sale. You're giving away margin to people who would have paid full price anyway.",
+      "Sending the same discount to your entire list teaches loyal customers to hold out for a deal. You give away margin to people who would have paid full price anyway.",
   },
   {
     emoji: '⏰',
     title: 'Empty slots are revenue lost forever',
     description:
       "A chair that sits empty on Tuesday afternoon can't be recovered. That's not just a missed booking — it's the most expensive hour of your week.",
+  },
+]
+
+const COMPARISON = [
+  {
+    feature: 'Targets your own past customers',
+    beckon: true,
+    dealPlatforms: false,
+    emailBlasts: false,
+    loyaltyCards: false,
+  },
+  {
+    feature: 'Personalizes offer depth per customer',
+    beckon: true,
+    dealPlatforms: false,
+    emailBlasts: false,
+    loyaltyCards: false,
+  },
+  {
+    feature: 'Sends at the right moment automatically',
+    beckon: true,
+    dealPlatforms: false,
+    emailBlasts: false,
+    loyaltyCards: false,
+  },
+  {
+    feature: 'No commission or % of revenue',
+    beckon: true,
+    dealPlatforms: false,
+    emailBlasts: true,
+    loyaltyCards: true,
+  },
+  {
+    feature: 'Works without a marketing team',
+    beckon: true,
+    dealPlatforms: true,
+    emailBlasts: false,
+    loyaltyCards: true,
+  },
+  {
+    feature: 'Protects your brand from deal-hunters',
+    beckon: true,
+    dealPlatforms: false,
+    emailBlasts: true,
+    loyaltyCards: true,
+  },
+  {
+    feature: 'Tracks lapsed customers automatically',
+    beckon: true,
+    dealPlatforms: false,
+    emailBlasts: false,
+    loyaltyCards: false,
+  },
+  {
+    feature: 'Setup in under 15 minutes',
+    beckon: true,
+    dealPlatforms: true,
+    emailBlasts: false,
+    loyaltyCards: true,
   },
 ]
 
@@ -118,11 +178,11 @@ export default function LandingPage() {
             <Link href="/login">
               <Button variant="ghost" size="sm">Sign In</Button>
             </Link>
-            <Link href="/dashboard">
+            <RequestDemoModal>
               <Button size="sm" className="gap-1.5">
-                See Demo <ArrowRight size={14} />
+                Request Demo <ArrowRight size={14} />
               </Button>
-            </Link>
+            </RequestDemoModal>
           </div>
         </div>
       </header>
@@ -140,18 +200,18 @@ export default function LandingPage() {
           </h1>
           <p className="text-lg md:text-xl text-indigo-100 max-w-2xl mx-auto mb-10">
             Beckon sends personalized offers to the right customer at the right
-            time — so your slow Tuesday becomes a full house. No Groupon, no
-            blasting discounts, no marketing degree required.
+            time — so your slow Tuesday becomes a full house. No deal platforms,
+            no blasting discounts, no marketing degree required.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/dashboard">
+            <RequestDemoModal>
               <Button
                 size="lg"
                 className="bg-white text-indigo-700 hover:bg-indigo-50 font-semibold px-8 gap-2 w-full sm:w-auto"
               >
-                See the Demo <ArrowRight size={18} />
+                Request a Demo <ArrowRight size={18} />
               </Button>
-            </Link>
+            </RequestDemoModal>
           </div>
           <p className="mt-6 text-indigo-200 text-sm">
             No credit card required · Setup in 15 minutes · Cancel anytime
@@ -277,8 +337,101 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Pricing */}
+      {/* Comparison table */}
       <section className="bg-muted/30 border-y">
+        <div className="max-w-5xl mx-auto px-4 py-20">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              How Beckon compares
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Other tools were built for different problems. Beckon is the only one
+              built specifically to fill empty local service slots without sacrificing your brand.
+            </p>
+          </div>
+
+          <div className="overflow-x-auto rounded-xl border bg-card shadow-sm">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left px-5 py-4 font-semibold text-muted-foreground w-1/2">Feature</th>
+                  <th className="px-4 py-4 text-center font-bold text-primary">
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
+                        <span className="text-primary-foreground font-bold text-xs">B</span>
+                      </div>
+                      Beckon
+                    </div>
+                  </th>
+                  <th className="px-4 py-4 text-center font-medium text-muted-foreground">
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="text-lg">🏷️</span>
+                      Deal Platforms
+                    </div>
+                  </th>
+                  <th className="px-4 py-4 text-center font-medium text-muted-foreground">
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="text-lg">📧</span>
+                      Email Blasts
+                    </div>
+                  </th>
+                  <th className="px-4 py-4 text-center font-medium text-muted-foreground">
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="text-lg">🃏</span>
+                      Loyalty Cards
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {COMPARISON.map((row, i) => (
+                  <tr
+                    key={row.feature}
+                    className={i % 2 === 0 ? 'bg-muted/20' : ''}
+                  >
+                    <td className="px-5 py-3.5 font-medium">{row.feature}</td>
+                    <td className="px-4 py-3.5 text-center">
+                      {row.beckon ? (
+                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-600 font-bold text-xs">✓</span>
+                      ) : (
+                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-100 text-red-500 font-bold text-xs">✕</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3.5 text-center">
+                      {row.dealPlatforms ? (
+                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-600 font-bold text-xs">✓</span>
+                      ) : (
+                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-100 text-red-500 font-bold text-xs">✕</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3.5 text-center">
+                      {row.emailBlasts ? (
+                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-600 font-bold text-xs">✓</span>
+                      ) : (
+                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-100 text-red-500 font-bold text-xs">✕</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3.5 text-center">
+                      {row.loyaltyCards ? (
+                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-600 font-bold text-xs">✓</span>
+                      ) : (
+                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-100 text-red-500 font-bold text-xs">✕</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <p className="text-center text-xs text-muted-foreground mt-4">
+            Deal platforms include Groupon and similar discount marketplaces. Email blasts include Mailchimp and Klaviyo. Loyalty cards include punch cards and basic points programs.
+          </p>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section className="bg-background border-y">
         <div className="max-w-6xl mx-auto px-4 py-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -317,11 +470,11 @@ export default function LandingPage() {
                       </div>
                     ))}
                   </div>
-                  <Link href="/dashboard">
+                  <RequestDemoModal>
                     <Button className="w-full" variant={plan.featured ? 'default' : 'outline'}>
-                      Try the Demo
+                      Request a Demo
                     </Button>
-                  </Link>
+                  </RequestDemoModal>
                 </CardContent>
               </Card>
             ))}
@@ -338,11 +491,11 @@ export default function LandingPage() {
           Join hundreds of local businesses using Beckon to turn slow days into
           their most profitable ones.
         </p>
-        <Link href="/dashboard">
+        <RequestDemoModal>
           <Button size="lg" className="gap-2 px-8">
-            See the Demo <ArrowRight size={18} />
+            Request a Demo <ArrowRight size={18} />
           </Button>
-        </Link>
+        </RequestDemoModal>
       </section>
 
       {/* Footer */}
@@ -359,7 +512,9 @@ export default function LandingPage() {
           </p>
           <div className="flex gap-4 text-sm text-muted-foreground">
             <Link href="/login" className="hover:text-foreground transition-colors">Login</Link>
-            <Link href="/dashboard" className="hover:text-foreground transition-colors">Demo</Link>
+            <RequestDemoModal>
+              <span className="hover:text-foreground transition-colors cursor-pointer">Request Demo</span>
+            </RequestDemoModal>
           </div>
         </div>
       </footer>
