@@ -29,7 +29,7 @@ export function RequestDemoModal({ children }) {
     const body = encodeURIComponent(
       `Name: ${form.name}\nBusiness: ${form.business}\nType: ${form.type}\nEmail: ${form.email}`
     )
-    window.location.href = `mailto:hello@beckon.com?subject=${subject}&body=${body}`
+    window.open(`mailto:sakxamshrestha57@gmail.com?subject=${subject}&body=${body}`, '_self')
     setSubmitted(true)
   }
 
@@ -75,12 +75,18 @@ export function RequestDemoModal({ children }) {
             {submitted ? (
               <div className="text-center py-8">
                 <CheckCircle size={48} className="text-green-500 mx-auto mb-3" />
-                <h3 className="font-semibold text-lg mb-1">You&apos;re on the list!</h3>
-                <p className="text-muted-foreground text-sm">
-                  We&apos;ll be in touch within 24 hours to set up your personal walkthrough.
+                <h3 className="font-semibold text-lg mb-1">Your email app should open!</h3>
+                <p className="text-muted-foreground text-sm mb-4">
+                  If it didn&apos;t open automatically, you can email us directly at:
                 </p>
-                <Button className="mt-5" onClick={handleClose}>
-                  Close
+                <a
+                  href="mailto:sakxamshrestha57@gmail.com"
+                  className="inline-block font-medium text-primary underline underline-offset-2 text-sm break-all"
+                >
+                  sakxamshrestha57@gmail.com
+                </a>
+                <Button className="mt-6 w-full" onClick={handleClose}>
+                  Done
                 </Button>
               </div>
             ) : (
