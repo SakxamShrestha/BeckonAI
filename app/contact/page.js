@@ -325,36 +325,6 @@ export default function ContactPage() {
                 ))}
               </div>
 
-              {/* Trusted by section */}
-              <div className="fu fu-5">
-                <p
-                  className="text-xs font-bold uppercase tracking-widest mb-3"
-                  style={{ color: '#AAA', letterSpacing: '0.12em' }}
-                >
-                  Trusted by 100+ local businesses
-                </p>
-                <div
-                  className="rounded-xl overflow-hidden"
-                  style={{ border: '1px solid #E8E8E8' }}
-                >
-                  <div className="grid grid-cols-3">
-                    {BUSINESS_TYPES.map((type, i) => (
-                      <div
-                        key={type}
-                        className="beckon-biz-cell flex items-center justify-center px-3 py-4 text-xs font-semibold text-center"
-                        style={{
-                          color: '#999',
-                          borderRight: i % 3 !== 2 ? '1px solid #E8E8E8' : 'none',
-                          borderBottom: i < 3 ? '1px solid #E8E8E8' : 'none',
-                          background: '#fff',
-                        }}
-                      >
-                        {type}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
             </div>
 
             {/* ── RIGHT COLUMN — Form Card ── */}
