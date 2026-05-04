@@ -19,7 +19,7 @@ import {
   Sparkles,
 } from 'lucide-react'
 
-const NAV_LINKS = ['Features', 'How it Works', 'Contact', 'Pricing']
+const NAV_LINKS = ['How it Works', 'Contact']
 
 /* ── The three signals Beckon tracks ── */
 const SIGNALS = [
