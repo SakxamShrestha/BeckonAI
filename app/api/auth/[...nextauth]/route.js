@@ -1,27 +1,11 @@
 import NextAuth from 'next-auth'
-import CredentialsProvider from 'next-auth/providers/credentials'
+import GoogleProvider from 'next-auth/providers/google'
 
 const authOptions = {
   providers: [
-    CredentialsProvider({
-      name: 'Demo Account',
-      credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
-      },
-      async authorize(credentials) {
-        if (
-          credentials?.email === process.env.DEMO_EMAIL &&
-          credentials?.password === process.env.DEMO_PASSWORD
-        ) {
-          return {
-            id: '1',
-            email: process.env.DEMO_EMAIL,
-            name: 'Sarah',
-          }
-        }
-        return null
-      },
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
   pages: {
@@ -31,8 +15,9 @@ const authOptions = {
     strategy: 'jwt',
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) token.user = user
+      if (account) token.provider = account.provider
       return token
     },
     async session({ session, token }) {
