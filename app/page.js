@@ -174,6 +174,14 @@ export default function LandingPage() {
             </div>
             <span className="font-bold text-lg">Beckon</span>
           </div>
+          <nav className="hidden md:flex items-center gap-6">
+            <Link href="/how-it-works" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              How it Works
+            </Link>
+            <Link href="/contact" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              Contact
+            </Link>
+          </nav>
           <div className="flex items-center gap-3">
             <Link href="/login">
               <Button variant="ghost" size="sm">Sign In</Button>
@@ -511,10 +519,9 @@ export default function LandingPage() {
             Built for local businesses, by people who care about them.
           </p>
           <div className="flex gap-4 text-sm text-muted-foreground">
+            <Link href="/how-it-works" className="hover:text-foreground transition-colors">How it Works</Link>
+            <Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link>
             <Link href="/login" className="hover:text-foreground transition-colors">Login</Link>
-            <RequestDemoModal>
-              <span className="hover:text-foreground transition-colors cursor-pointer">Request Demo</span>
-            </RequestDemoModal>
           </div>
         </div>
       </footer>
