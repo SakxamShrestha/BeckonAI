@@ -42,6 +42,13 @@ model Slot {
   createdAt  DateTime @default(now())
 }
 
+model WaitlistEntry {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  businessType String?
+  createdAt    DateTime @default(now())
+}
+
 model Offer {
   id           String    @id @default(cuid())
   customerId   String

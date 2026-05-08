@@ -1,530 +1,583 @@
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { RequestDemoModal } from '@/components/RequestDemoModal'
-import { ArrowRight, CheckCircle } from 'lucide-react'
+'use client'
 
-const BUSINESS_TYPES = [
-  'Hair Salon',
-  'Barbershop',
-  'Restaurant',
-  'Nail Studio',
-  'Massage Spa',
-  'Café',
-  'Tattoo Shop',
-  'Dog Groomer',
-  'Fitness Studio',
-  'Personal Trainer',
-]
+import { useState } from 'react'
+import Link from 'next/link'
+import { Lock, ArrowRight, ArrowUpRight, CheckCircle } from 'lucide-react'
 
 const PROBLEMS = [
   {
-    emoji: '💸',
-    title: 'Deal platforms cost you more than a slow day',
-    description:
-      "Discount marketplaces take up to 50% commission and send deal-hunters who never return. You end up working twice as hard for half the pay — and training customers to wait for a sale.",
+    tag: 'Revenue lost forever',
+    headline: 'Empty slots can\'t be recovered.',
+    body: 'A chair sitting idle on Tuesday afternoon is money that\'s gone the moment the clock passes. No tool today helps you fill it before it happens — they only help you count what you lost.',
+    accent: '#FF4444',
+    accentBg: 'rgba(255,68,68,0.08)',
   },
   {
-    emoji: '📣',
-    title: 'Generic blasts don\'t move the needle',
-    description:
-      "Sending the same discount to your entire list teaches loyal customers to hold out for a deal. You give away margin to people who would have paid full price anyway.",
+    tag: 'Brand destruction',
+    headline: 'Groupon sends deal-hunters, not loyal clients.',
+    body: 'Discount platforms take up to 50% of your revenue, flood your schedule with one-time bargain seekers, and train your real customers to wait for a sale. You work twice as hard for half the pay.',
+    accent: '#FF8C00',
+    accentBg: 'rgba(255,140,0,0.08)',
   },
   {
-    emoji: '⏰',
-    title: 'Empty slots are revenue lost forever',
-    description:
-      "A chair that sits empty on Tuesday afternoon can't be recovered. That's not just a missed booking — it's the most expensive hour of your week.",
+    tag: 'No time, no team',
+    headline: 'You\'re the stylist, the chef, the receptionist.',
+    body: 'Marketing tools were built for people with marketing teams. You have 20 minutes between clients. Mailchimp, Instagram ads, and loyalty programs weren\'t designed for your reality.',
+    accent: '#FF4444',
+    accentBg: 'rgba(255,68,68,0.08)',
   },
 ]
 
-const COMPARISON = [
-  {
-    feature: 'Targets your own past customers',
-    beckon: true,
-    dealPlatforms: false,
-    emailBlasts: false,
-    loyaltyCards: false,
-  },
-  {
-    feature: 'Personalizes offer depth per customer',
-    beckon: true,
-    dealPlatforms: false,
-    emailBlasts: false,
-    loyaltyCards: false,
-  },
-  {
-    feature: 'Sends at the right moment automatically',
-    beckon: true,
-    dealPlatforms: false,
-    emailBlasts: false,
-    loyaltyCards: false,
-  },
-  {
-    feature: 'No commission or % of revenue',
-    beckon: true,
-    dealPlatforms: false,
-    emailBlasts: true,
-    loyaltyCards: true,
-  },
-  {
-    feature: 'Works without a marketing team',
-    beckon: true,
-    dealPlatforms: true,
-    emailBlasts: false,
-    loyaltyCards: true,
-  },
-  {
-    feature: 'Protects your brand from deal-hunters',
-    beckon: true,
-    dealPlatforms: false,
-    emailBlasts: true,
-    loyaltyCards: true,
-  },
-  {
-    feature: 'Tracks lapsed customers automatically',
-    beckon: true,
-    dealPlatforms: false,
-    emailBlasts: false,
-    loyaltyCards: false,
-  },
-  {
-    feature: 'Setup in under 15 minutes',
-    beckon: true,
-    dealPlatforms: true,
-    emailBlasts: false,
-    loyaltyCards: true,
-  },
-]
-
-const STEPS = [
+const STEALTH_FEATURES = [
   {
     number: '01',
-    title: 'Add your customers',
-    description:
-      'Import from your booking system or upload a simple list of names and phone numbers. Takes 10 minutes.',
-    icon: '👥',
+    teaser: 'Fill your slowest days before they become dead.',
+    hint: 'Timing × Customer intelligence',
   },
   {
     number: '02',
-    title: 'Mark your slow slots',
-    description:
-      "Tell Beckon which days and times are historically quiet. Tuesday 2pm? First week of January? Beckon learns your rhythm.",
-    icon: '📅',
+    teaser: 'Win back regulars before they\'re gone for good.',
+    hint: 'Recency × Loyalty signals',
   },
   {
     number: '03',
-    title: 'Beckon does the rest',
-    description:
-      'Before a slow period hits, Beckon automatically sends a personalized offer to the right customer at exactly the right moment.',
-    icon: '✨',
+    teaser: 'New clients — without Groupon, ads, or guesswork.',
+    hint: 'Personalization × Local reach',
   },
 ]
 
-const STATS = [
-  { value: '2.3', label: 'empty slots filled per week', sublabel: 'average across all businesses' },
-  { value: '68%', label: 'of lapsed customers return', sublabel: 'after a personalized message' },
-  { value: '15 min', label: 'to set up', sublabel: 'then it runs itself' },
+const AUDIENCE = [
+  { label: 'Hair Salons', icon: '✂️' },
+  { label: 'Barbershops', icon: '💈' },
+  { label: 'Nail Studios', icon: '💅' },
+  { label: 'Restaurants', icon: '🍽️' },
+  { label: 'Massage & Spa', icon: '💆' },
+  { label: 'Cafés', icon: '☕' },
+  { label: 'Tattoo Shops', icon: '🎨' },
+  { label: 'Dog Groomers', icon: '🐾' },
+  { label: 'Fitness Studios', icon: '🏋️' },
+  { label: 'Personal Trainers', icon: '🤸' },
 ]
 
-const PRICING = [
-  {
-    name: 'Starter',
-    price: '$19',
-    desc: 'Perfect for solo operators',
-    features: ['Up to 100 customers', 'SMS offers', 'Slow day intelligence'],
-    featured: false,
-  },
-  {
-    name: 'Growth',
-    price: '$49',
-    desc: 'For small teams',
-    features: [
-      'Up to 500 customers',
-      'Everything in Starter',
-      'Referral rewards',
-      'Social DM trigger',
-    ],
-    featured: true,
-  },
-  {
-    name: 'Full House',
-    price: '$89',
-    desc: 'Multi-location or high volume',
-    features: [
-      '500+ customers',
-      'Everything in Growth',
-      'Multi-location',
-      'Priority support',
-    ],
-    featured: false,
-  },
-]
+function WaitlistForm({ dark = false }) {
+  const [email, setEmail] = useState('')
+  const [bizType, setBizType] = useState('')
+  const [status, setStatus] = useState('idle')
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    setStatus('loading')
+    try {
+      const res = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, businessType: bizType }),
+      })
+      setStatus(res.ok ? 'success' : 'error')
+    } catch {
+      setStatus('error')
+    }
+  }
+
+  if (status === 'success') {
+    return (
+      <div className="flex items-center gap-3 py-4">
+        <CheckCircle size={22} style={{ color: '#FFE500', flexShrink: 0 }} />
+        <div>
+          <p className="font-bold text-sm" style={{ color: dark ? '#fff' : '#1A1A1A' }}>
+            You&apos;re on the list.
+          </p>
+          <p className="text-xs mt-0.5" style={{ color: dark ? '#888' : '#666' }}>
+            We&apos;ll reach out before we launch. No spam.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2">
+      <input
+        type="email"
+        required
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+        placeholder="your@email.com"
+        className="waitlist-input flex-1 px-4 py-3 rounded-xl text-sm font-medium"
+        style={{
+          background: dark ? '#1A1A1A' : '#F5F5F5',
+          border: `1.5px solid ${dark ? '#2A2A2A' : '#E0E0E0'}`,
+          color: dark ? '#fff' : '#1A1A1A',
+          outline: 'none',
+        }}
+      />
+      <select
+        value={bizType}
+        onChange={e => setBizType(e.target.value)}
+        className="waitlist-input px-4 py-3 rounded-xl text-sm font-medium"
+        style={{
+          background: dark ? '#1A1A1A' : '#F5F5F5',
+          border: `1.5px solid ${dark ? '#2A2A2A' : '#E0E0E0'}`,
+          color: bizType ? (dark ? '#fff' : '#1A1A1A') : '#888',
+          outline: 'none',
+          minWidth: '160px',
+        }}
+      >
+        <option value="">Business type</option>
+        {AUDIENCE.map(a => (
+          <option key={a.label} value={a.label}>{a.label}</option>
+        ))}
+        <option value="Other">Other</option>
+      </select>
+      <button
+        type="submit"
+        disabled={status === 'loading'}
+        className="waitlist-btn px-5 py-3 rounded-xl text-sm font-extrabold flex items-center justify-center gap-2 whitespace-nowrap"
+        style={{
+          background: '#FFE500',
+          color: '#0A0A0A',
+          opacity: status === 'loading' ? 0.7 : 1,
+        }}
+      >
+        {status === 'loading' ? 'Joining…' : <>Join the Waitlist <ArrowRight size={15} /></>}
+      </button>
+      {status === 'error' && (
+        <p className="text-xs mt-1" style={{ color: '#FF4444' }}>
+          Something went wrong. Try again.
+        </p>
+      )}
+    </form>
+  )
+}
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-background">
-      {/* Sticky nav */}
-      <header className="border-b bg-background/80 backdrop-blur sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">B</span>
-            </div>
-            <span className="font-bold text-lg">Beckon</span>
-          </div>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link href="/how-it-works" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              How it Works
-            </Link>
-            <Link href="/contact" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              Contact
-            </Link>
-          </nav>
-          <div className="flex items-center gap-3">
-            <Link href="/login">
-              <Button variant="ghost" size="sm">Sign In</Button>
-            </Link>
-            <RequestDemoModal>
-              <Button size="sm" className="gap-1.5">
-                Request Demo <ArrowRight size={14} />
-              </Button>
-            </RequestDemoModal>
-          </div>
-        </div>
-      </header>
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
 
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 text-white">
-        <div className="max-w-6xl mx-auto px-4 py-20 md:py-28 text-center">
-          <Badge className="bg-white/20 text-white hover:bg-white/20 mb-6 text-sm px-4 py-1 border-0">
-            Built for local service businesses
-          </Badge>
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
-            Fill Your Empty Chairs.
-            <br />
-            <span className="text-indigo-200">Automatically.</span>
-          </h1>
-          <p className="text-lg md:text-xl text-indigo-100 max-w-2xl mx-auto mb-10">
-            Beckon sends personalized offers to the right customer at the right
-            time — so your slow Tuesday becomes a full house. No deal platforms,
-            no blasting discounts, no marketing degree required.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <RequestDemoModal>
-              <Button
-                size="lg"
-                className="bg-white text-indigo-700 hover:bg-indigo-50 font-semibold px-8 gap-2 w-full sm:w-auto"
-              >
-                Request a Demo <ArrowRight size={18} />
-              </Button>
-            </RequestDemoModal>
-          </div>
-          <p className="mt-6 text-indigo-200 text-sm">
-            No credit card required · Setup in 15 minutes · Cancel anytime
-          </p>
-        </div>
-      </section>
+        body { background: #0A0A0A; }
 
-      {/* Business types scroll row */}
-      <section className="border-b bg-muted/30">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-3 overflow-x-auto">
-            <span className="text-sm text-muted-foreground whitespace-nowrap flex-shrink-0 font-medium">
-              Built for:
+        .beckon-land * {
+          font-family: 'DM Sans', sans-serif;
+          box-sizing: border-box;
+        }
+        .beckon-land h1,
+        .beckon-land h2,
+        .beckon-land h3,
+        .beckon-land .syne {
+          font-family: 'Syne', sans-serif;
+        }
+
+        /* Grain overlay */
+        .beckon-land::after {
+          content: '';
+          position: fixed;
+          inset: 0;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+          opacity: 0.03;
+          pointer-events: none;
+          z-index: 999;
+        }
+
+        /* Focus styles */
+        .waitlist-input:focus {
+          border-color: #FFE500 !important;
+          box-shadow: 0 0 0 3px rgba(255, 229, 0, 0.15);
+        }
+
+        /* Button */
+        .waitlist-btn {
+          transition: transform 0.1s ease, box-shadow 0.15s ease;
+          cursor: pointer;
+        }
+        .waitlist-btn:hover:not(:disabled) {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 20px rgba(255,229,0,0.35);
+        }
+        .waitlist-btn:active { transform: translateY(0); }
+
+        /* Nav link */
+        .nav-link {
+          transition: color 0.15s ease;
+          color: #888;
+        }
+        .nav-link:hover { color: #fff; }
+
+        /* Problem card */
+        .problem-card {
+          transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .problem-card:hover {
+          transform: translateY(-3px);
+          border-color: #333 !important;
+        }
+
+        /* Stealth card */
+        .stealth-card {
+          transition: border-color 0.2s ease, background 0.2s ease;
+        }
+        .stealth-card:hover {
+          border-color: #FFE500 !important;
+          background: rgba(255,229,0,0.03) !important;
+        }
+
+        /* Audience cell */
+        .audience-cell {
+          transition: background 0.15s ease, color 0.15s ease;
+        }
+        .audience-cell:hover {
+          background: rgba(255,229,0,0.08) !important;
+          color: #FFE500 !important;
+        }
+
+        /* Animations */
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        .fu { animation: fadeUp 0.6s cubic-bezier(0.22,1,0.36,1) forwards; opacity: 0; }
+        .fu-1 { animation-delay: 0.05s; }
+        .fu-2 { animation-delay: 0.15s; }
+        .fu-3 { animation-delay: 0.25s; }
+        .fu-4 { animation-delay: 0.40s; }
+
+        /* Yellow underline on headline */
+        .yellow-mark {
+          position: relative;
+          display: inline;
+          color: #FFE500;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0A0A0A; }
+        ::-webkit-scrollbar-thumb { background: #2A2A2A; border-radius: 3px; }
+      `}</style>
+
+      <div className="beckon-land min-h-screen" style={{ background: '#0A0A0A', color: '#fff' }}>
+
+        {/* ── Nav ── */}
+        <header style={{
+          borderBottom: '1px solid #1A1A1A',
+          background: 'rgba(10,10,10,0.9)',
+          backdropFilter: 'blur(12px)',
+          position: 'sticky', top: 0, zIndex: 50,
+        }}>
+          <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 20px', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            {/* Logo */}
+            <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: '#FFE500', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 14, color: '#0A0A0A' }}>B</span>
+              </div>
+              <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 18, color: '#fff', letterSpacing: '-0.3px' }}>Beckon</span>
+            </Link>
+
+            {/* Links */}
+            <nav style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
+              <Link href="/how-it-works" className="nav-link" style={{ fontSize: 14, fontWeight: 500, textDecoration: 'none' }}>How it Works</Link>
+              <Link href="/contact" className="nav-link" style={{ fontSize: 14, fontWeight: 500, textDecoration: 'none' }}>Contact</Link>
+            </nav>
+
+            {/* CTA */}
+            <Link
+              href="#waitlist"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                padding: '8px 16px', borderRadius: 10,
+                background: '#FFE500', color: '#0A0A0A',
+                fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 13,
+                textDecoration: 'none',
+                transition: 'box-shadow 0.15s ease, transform 0.1s ease',
+              }}
+            >
+              Join Waitlist <ArrowRight size={13} />
+            </Link>
+          </div>
+        </header>
+
+        {/* ── Hero ── */}
+        <section style={{ maxWidth: 1100, margin: '0 auto', padding: '90px 20px 80px' }}>
+
+          {/* Stealth badge */}
+          <div className="fu fu-1" style={{ marginBottom: 28 }}>
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              padding: '6px 14px', borderRadius: 999,
+              border: '1px solid #2A2A2A', background: '#141414',
+              fontSize: 12, fontWeight: 600, color: '#888',
+              letterSpacing: '0.05em',
+            }}>
+              <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#FFE500', display: 'inline-block', animation: 'pulse 2s infinite' }} />
+              IN STEALTH MODE · EARLY ACCESS
             </span>
-            {BUSINESS_TYPES.map((type, i) => (
-              <span key={type} className="flex items-center gap-3 flex-shrink-0">
-                <span className="text-sm font-medium text-foreground whitespace-nowrap">
-                  {type}
-                </span>
-                {i < BUSINESS_TYPES.length - 1 && (
-                  <span className="text-muted-foreground">·</span>
-                )}
+          </div>
+
+          {/* Headline */}
+          <h1 className="fu fu-2 syne" style={{
+            fontSize: 'clamp(2.8rem, 7vw, 5.2rem)',
+            fontWeight: 800,
+            lineHeight: 1.05,
+            letterSpacing: '-2.5px',
+            maxWidth: '14ch',
+            marginBottom: 24,
+          }}>
+            The Uber for{' '}
+            <span className="yellow-mark">local service</span>
+            {' '}businesses.
+          </h1>
+
+          {/* Subtext */}
+          <p className="fu fu-3" style={{
+            fontSize: 18,
+            lineHeight: 1.7,
+            color: '#888',
+            maxWidth: '52ch',
+            marginBottom: 40,
+          }}>
+            We&apos;re building the first AI that fills empty chairs, wins back lapsed
+            clients, and brings in new ones — automatically, personally, and without
+            Groupon. Set it up in an afternoon. Then let it run.
+          </p>
+
+          {/* Waitlist form */}
+          <div className="fu fu-4" id="waitlist">
+            <WaitlistForm dark />
+            <p style={{ fontSize: 12, color: '#555', marginTop: 12 }}>
+              No credit card · No spam · Early access only
+            </p>
+          </div>
+        </section>
+
+        {/* ── Divider bar ── */}
+        <div style={{ borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A', background: '#0F0F0F', padding: '18px 20px' }}>
+          <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: 32, alignItems: 'center' }}>
+            {[
+              'Built for local, not e-commerce',
+              'Zero marketing expertise required',
+              'Works with your existing booking tool',
+              'Launching soon',
+            ].map((item, i) => (
+              <span key={item} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#555', fontWeight: 500 }}>
+                {i > 0 && <span style={{ width: 4, height: 4, borderRadius: '50%', background: '#2A2A2A' }} />}
+                {item}
               </span>
             ))}
           </div>
         </div>
-      </section>
 
-      {/* Problem section */}
-      <section className="max-w-6xl mx-auto px-4 py-20">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            The marketing tools you have don&apos;t work for you
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            They were built for e-commerce companies with marketing teams. You&apos;re a
-            stylist, a chef, a therapist. You need something different.
-          </p>
-        </div>
-        <div className="grid md:grid-cols-3 gap-6">
-          {PROBLEMS.map((problem) => (
-            <Card key={problem.title} className="border-red-100 bg-red-50/50">
-              <CardContent className="pt-6">
-                <div className="text-3xl mb-3">{problem.emoji}</div>
-                <h3 className="font-semibold text-lg mb-2">{problem.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  {problem.description}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section className="bg-muted/30 border-y">
-        <div className="max-w-6xl mx-auto px-4 py-20">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              How Beckon works
-            </h2>
-            <p className="text-muted-foreground text-lg">
-              Set it up once. Then let it run.
+        {/* ── Problem Section ── */}
+        <section style={{ maxWidth: 1100, margin: '0 auto', padding: '90px 20px' }}>
+          <div style={{ marginBottom: 56 }}>
+            <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', color: '#555', textTransform: 'uppercase', marginBottom: 14 }}>
+              The real problem
             </p>
+            <h2 className="syne" style={{ fontSize: 'clamp(2rem, 4vw, 2.8rem)', fontWeight: 800, letterSpacing: '-1.5px', maxWidth: '22ch', lineHeight: 1.1 }}>
+              The tools you have were built for someone else.
+            </h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {STEPS.map((step) => (
-              <div key={step.number} className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 text-3xl mb-4">
-                  {step.icon}
-                </div>
-                <div className="text-xs font-bold text-primary uppercase tracking-wider mb-2">
-                  Step {step.number}
-                </div>
-                <h3 className="font-semibold text-lg mb-2">{step.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  {step.description}
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
+            {PROBLEMS.map((p) => (
+              <div
+                key={p.tag}
+                className="problem-card"
+                style={{
+                  background: '#0F0F0F',
+                  border: '1px solid #1A1A1A',
+                  borderRadius: 16,
+                  padding: 28,
+                }}
+              >
+                <span style={{
+                  display: 'inline-block',
+                  padding: '4px 10px',
+                  borderRadius: 6,
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  background: p.accentBg,
+                  color: p.accent,
+                  marginBottom: 16,
+                }}>
+                  {p.tag}
+                </span>
+                <h3 className="syne" style={{ fontSize: 17, fontWeight: 700, marginBottom: 10, letterSpacing: '-0.4px', lineHeight: 1.3 }}>
+                  {p.headline}
+                </h3>
+                <p style={{ fontSize: 14, lineHeight: 1.7, color: '#666' }}>
+                  {p.body}
                 </p>
               </div>
             ))}
           </div>
+        </section>
 
-          <div className="mt-12 bg-primary/5 border border-primary/20 rounded-xl p-6 max-w-2xl mx-auto">
-            <h3 className="font-semibold mb-3 text-center">The Beckon difference</h3>
-            <div className="space-y-2">
-              {[
-                'Only sends to real past customers — not strangers',
-                'Discount depth set by AI — loyal customers get smaller nudges',
-                'Timing based on their personal visit cycle, not a blast schedule',
-                "Reads like a text from Sarah, not an automated blast",
-              ].map((point) => (
-                <div key={point} className="flex items-start gap-2 text-sm">
-                  <CheckCircle size={16} className="text-primary mt-0.5 flex-shrink-0" />
-                  <span>{point}</span>
+        {/* ── Stealth Features ── */}
+        <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A', padding: '90px 20px' }}>
+          <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+            <div style={{ marginBottom: 56, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+              <div>
+                <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', color: '#555', textTransform: 'uppercase', marginBottom: 14 }}>
+                  What we&apos;re building
+                </p>
+                <h2 className="syne" style={{ fontSize: 'clamp(2rem, 4vw, 2.8rem)', fontWeight: 800, letterSpacing: '-1.5px', lineHeight: 1.1 }}>
+                  Three things,{' '}
+                  <span style={{ color: '#FFE500' }}>done automatically.</span>
+                </h2>
+              </div>
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', gap: 7,
+                padding: '7px 14px', borderRadius: 8,
+                border: '1px solid #2A2A2A', background: '#141414',
+                fontSize: 12, fontWeight: 600, color: '#555',
+              }}>
+                <Lock size={12} /> Full details at launch
+              </span>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
+              {STEALTH_FEATURES.map((f) => (
+                <div
+                  key={f.number}
+                  className="stealth-card"
+                  style={{
+                    background: '#0A0A0A',
+                    border: '1px solid #1A1A1A',
+                    borderRadius: 16,
+                    padding: 28,
+                    position: 'relative',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {/* Lock badge */}
+                  <div style={{
+                    position: 'absolute', top: 20, right: 20,
+                    width: 28, height: 28, borderRadius: 8,
+                    background: '#1A1A1A',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <Lock size={13} color="#444" />
+                  </div>
+
+                  <span className="syne" style={{ fontSize: 40, fontWeight: 800, color: '#1E1E1E', display: 'block', marginBottom: 20, letterSpacing: '-2px' }}>
+                    {f.number}
+                  </span>
+
+                  <p className="syne" style={{ fontSize: 18, fontWeight: 700, lineHeight: 1.35, letterSpacing: '-0.4px', marginBottom: 14, paddingRight: 24 }}>
+                    {f.teaser}
+                  </p>
+
+                  <div style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 6,
+                    padding: '5px 10px', borderRadius: 6,
+                    background: 'rgba(255,229,0,0.08)',
+                    fontSize: 11, fontWeight: 600, color: '#FFE500',
+                    letterSpacing: '0.04em',
+                  }}>
+                    {f.hint}
+                  </div>
                 </div>
               ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Stats */}
-      <section className="max-w-6xl mx-auto px-4 py-20">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Results that actually matter to you
-          </h2>
-          <p className="text-muted-foreground text-lg">
-            Not conversion rates. Just: did more people show up?
-          </p>
-        </div>
-        <div className="grid md:grid-cols-3 gap-8">
-          {STATS.map((stat) => (
-            <div
-              key={stat.value}
-              className="text-center p-8 rounded-2xl bg-muted/40 border"
-            >
-              <div className="text-5xl font-bold text-primary mb-2">{stat.value}</div>
-              <div className="font-medium mb-1">{stat.label}</div>
-              <div className="text-sm text-muted-foreground">{stat.sublabel}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Comparison table */}
-      <section className="bg-muted/30 border-y">
-        <div className="max-w-5xl mx-auto px-4 py-20">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              How Beckon compares
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Other tools were built for different problems. Beckon is the only one
-              built specifically to fill empty local service slots without sacrificing your brand.
+        {/* ── Audience ── */}
+        <section style={{ maxWidth: 1100, margin: '0 auto', padding: '90px 20px' }}>
+          <div style={{ marginBottom: 48 }}>
+            <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', color: '#555', textTransform: 'uppercase', marginBottom: 14 }}>
+              Who it&apos;s for
             </p>
-          </div>
-
-          <div className="overflow-x-auto rounded-xl border bg-card shadow-sm">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left px-5 py-4 font-semibold text-muted-foreground w-1/2">Feature</th>
-                  <th className="px-4 py-4 text-center font-bold text-primary">
-                    <div className="flex flex-col items-center gap-1">
-                      <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
-                        <span className="text-primary-foreground font-bold text-xs">B</span>
-                      </div>
-                      Beckon
-                    </div>
-                  </th>
-                  <th className="px-4 py-4 text-center font-medium text-muted-foreground">
-                    <div className="flex flex-col items-center gap-1">
-                      <span className="text-lg">🏷️</span>
-                      Deal Platforms
-                    </div>
-                  </th>
-                  <th className="px-4 py-4 text-center font-medium text-muted-foreground">
-                    <div className="flex flex-col items-center gap-1">
-                      <span className="text-lg">📧</span>
-                      Email Blasts
-                    </div>
-                  </th>
-                  <th className="px-4 py-4 text-center font-medium text-muted-foreground">
-                    <div className="flex flex-col items-center gap-1">
-                      <span className="text-lg">🃏</span>
-                      Loyalty Cards
-                    </div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {COMPARISON.map((row, i) => (
-                  <tr
-                    key={row.feature}
-                    className={i % 2 === 0 ? 'bg-muted/20' : ''}
-                  >
-                    <td className="px-5 py-3.5 font-medium">{row.feature}</td>
-                    <td className="px-4 py-3.5 text-center">
-                      {row.beckon ? (
-                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-600 font-bold text-xs">✓</span>
-                      ) : (
-                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-100 text-red-500 font-bold text-xs">✕</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3.5 text-center">
-                      {row.dealPlatforms ? (
-                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-600 font-bold text-xs">✓</span>
-                      ) : (
-                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-100 text-red-500 font-bold text-xs">✕</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3.5 text-center">
-                      {row.emailBlasts ? (
-                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-600 font-bold text-xs">✓</span>
-                      ) : (
-                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-100 text-red-500 font-bold text-xs">✕</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3.5 text-center">
-                      {row.loyaltyCards ? (
-                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-600 font-bold text-xs">✓</span>
-                      ) : (
-                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-100 text-red-500 font-bold text-xs">✕</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <p className="text-center text-xs text-muted-foreground mt-4">
-            Deal platforms include Groupon and similar discount marketplaces. Email blasts include Mailchimp and Klaviyo. Loyalty cards include punch cards and basic points programs.
-          </p>
-        </div>
-      </section>
-
-      {/* Pricing */}
-      <section className="bg-background border-y">
-        <div className="max-w-6xl mx-auto px-4 py-20">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Flat monthly fee. No surprises.
+            <h2 className="syne" style={{ fontSize: 'clamp(2rem, 4vw, 2.8rem)', fontWeight: 800, letterSpacing: '-1.5px', lineHeight: 1.1 }}>
+              Built for businesses that run on{' '}
+              <span style={{ color: '#FFE500' }}>repeat clients.</span>
             </h2>
-            <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-              A percentage-of-revenue model feels like a tax on your success. Beckon
-              is a flat fee — like hiring a part-time marketing assistant.
-            </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            {PRICING.map((plan) => (
-              <Card
-                key={plan.name}
-                className={plan.featured ? 'border-primary shadow-lg' : ''}
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
+            border: '1px solid #1A1A1A',
+            borderRadius: 16,
+            overflow: 'hidden',
+          }}>
+            {AUDIENCE.map((a, i) => (
+              <div
+                key={a.label}
+                className="audience-cell"
+                style={{
+                  padding: '20px 16px',
+                  display: 'flex', alignItems: 'center', gap: 10,
+                  borderRight: (i + 1) % 5 !== 0 ? '1px solid #1A1A1A' : 'none',
+                  borderBottom: i < AUDIENCE.length - (AUDIENCE.length % 5 || 5) ? '1px solid #1A1A1A' : 'none',
+                  cursor: 'default',
+                  color: '#666',
+                }}
               >
-                {plan.featured && (
-                  <div className="bg-primary text-primary-foreground text-xs font-semibold text-center py-1.5 rounded-t-lg -mt-px -mx-px">
-                    Most Popular
-                  </div>
-                )}
-                <CardContent className="pt-6 pb-6">
-                  <div className="mb-4">
-                    <p className="font-semibold text-lg">{plan.name}</p>
-                    <p className="text-sm text-muted-foreground">{plan.desc}</p>
-                  </div>
-                  <div className="mb-4">
-                    <span className="text-4xl font-bold">{plan.price}</span>
-                    <span className="text-muted-foreground">/mo</span>
-                  </div>
-                  <div className="space-y-2 mb-6">
-                    {plan.features.map((f) => (
-                      <div key={f} className="flex items-center gap-2 text-sm">
-                        <CheckCircle size={14} className="text-primary flex-shrink-0" />
-                        <span>{f}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <RequestDemoModal>
-                    <Button className="w-full" variant={plan.featured ? 'default' : 'outline'}>
-                      Request a Demo
-                    </Button>
-                  </RequestDemoModal>
-                </CardContent>
-              </Card>
+                <span style={{ fontSize: 20 }}>{a.icon}</span>
+                <span style={{ fontSize: 13, fontWeight: 600 }}>{a.label}</span>
+              </div>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* CTA */}
-      <section className="max-w-6xl mx-auto px-4 py-20 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">
-          Ready to fill your empty chairs?
-        </h2>
-        <p className="text-muted-foreground text-lg mb-8 max-w-xl mx-auto">
-          Join hundreds of local businesses using Beckon to turn slow days into
-          their most profitable ones.
-        </p>
-        <RequestDemoModal>
-          <Button size="lg" className="gap-2 px-8">
-            Request a Demo <ArrowRight size={18} />
-          </Button>
-        </RequestDemoModal>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t bg-muted/30">
-        <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-xs">B</span>
+        {/* ── Final Waitlist CTA ── */}
+        <section style={{
+          borderTop: '1px solid #1A1A1A',
+          background: '#0F0F0F',
+          padding: '90px 20px',
+        }}>
+          <div style={{ maxWidth: 640, margin: '0 auto', textAlign: 'center' }}>
+            <div style={{
+              width: 56, height: 56, borderRadius: 14,
+              background: '#FFE500',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              margin: '0 auto 24px',
+            }}>
+              <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 22, color: '#0A0A0A' }}>B</span>
             </div>
-            <span className="font-semibold text-sm">Beckon</span>
+
+            <h2 className="syne" style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 800, letterSpacing: '-1.5px', marginBottom: 16, lineHeight: 1.1 }}>
+              Be first in line.
+            </h2>
+            <p style={{ fontSize: 16, color: '#666', lineHeight: 1.7, marginBottom: 36, maxWidth: '44ch', margin: '0 auto 36px' }}>
+              We&apos;re opening access to a small group of local businesses first.
+              Join the waitlist and we&apos;ll reach out personally before we launch.
+            </p>
+
+            <WaitlistForm dark />
+
+            <p style={{ fontSize: 12, color: '#444', marginTop: 14 }}>
+              No credit card required · You&apos;ll hear from us, not a bot
+            </p>
           </div>
-          <p className="text-sm text-muted-foreground text-center">
-            Built for local businesses, by people who care about them.
-          </p>
-          <div className="flex gap-4 text-sm text-muted-foreground">
-            <Link href="/how-it-works" className="hover:text-foreground transition-colors">How it Works</Link>
-            <Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link>
-            <Link href="/login" className="hover:text-foreground transition-colors">Login</Link>
+        </section>
+
+        {/* ── Footer ── */}
+        <footer style={{ borderTop: '1px solid #1A1A1A', padding: '28px 20px' }}>
+          <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ width: 24, height: 24, borderRadius: 6, background: '#FFE500', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 11, color: '#0A0A0A' }}>B</span>
+              </div>
+              <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 14, color: '#fff' }}>Beckon</span>
+            </div>
+
+            <p style={{ fontSize: 12, color: '#444' }}>
+              Built for local businesses, by people who care about them.
+            </p>
+
+            <div style={{ display: 'flex', gap: 20 }}>
+              <Link href="/how-it-works" style={{ fontSize: 13, color: '#555', textDecoration: 'none', fontWeight: 500, transition: 'color 0.15s' }}>How it Works</Link>
+              <Link href="/contact" style={{ fontSize: 13, color: '#555', textDecoration: 'none', fontWeight: 500 }}>Contact</Link>
+              <Link href="/login" style={{ fontSize: 13, color: '#555', textDecoration: 'none', fontWeight: 500 }}>Sign In</Link>
+            </div>
           </div>
-        </div>
-      </footer>
-    </div>
+        </footer>
+
+      </div>
+    </>
   )
 }
