@@ -215,9 +215,6 @@ export default function LandingPage() {
               <Link href="/contact" className="nav-link" style={{ fontSize: 14, fontWeight: 500, textDecoration: 'none' }}>Contact</Link>
             </nav>
 
-            <Link href="/login" className="nav-link" style={{ fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>
-              Sign In
-            </Link>
           </div>
         </header>
 
@@ -385,7 +382,6 @@ export default function LandingPage() {
             <div style={{ display: 'flex', gap: 20 }}>
               <Link href="/how-it-works" style={{ fontSize: 13, color: '#555', textDecoration: 'none', fontWeight: 500 }}>How it Works</Link>
               <Link href="/contact" style={{ fontSize: 13, color: '#555', textDecoration: 'none', fontWeight: 500 }}>Contact</Link>
-              <Link href="/login" style={{ fontSize: 13, color: '#555', textDecoration: 'none', fontWeight: 500 }}>Sign In</Link>
             </div>
           </div>
         </footer>

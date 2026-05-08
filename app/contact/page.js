@@ -136,10 +136,6 @@ export default function ContactPage() {
               ))}
             </nav>
 
-            <Link href="/login" className="beckon-btn-ghost hidden md:inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-bold border"
-              style={{ borderColor: '#FFE500', color: '#FFE500', background: 'transparent' }}>
-              Sign In <ArrowUpRight size={14} strokeWidth={2.5} />
-            </Link>
 
             <button className="md:hidden p-2 rounded-lg" style={{ color: '#888' }} onClick={() => setMobileOpen(!mobileOpen)}>
               {mobileOpen ? <X size={20} /> : <Menu size={20} />}
@@ -156,11 +152,6 @@ export default function ContactPage() {
                   {link}
                 </Link>
               ))}
-              <Link href="/login" className="mt-2 text-center px-4 py-2.5 rounded-lg text-sm font-bold border"
-                style={{ borderColor: '#FFE500', color: '#FFE500' }}
-                onClick={() => setMobileOpen(false)}>
-                Sign In
-              </Link>
             </div>
           )}
         </header>
