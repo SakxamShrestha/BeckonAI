@@ -156,10 +156,10 @@ export default function ContactPage() {
                   {link}
                 </Link>
               ))}
-              <Link href="/#waitlist" className="mt-2 text-center px-4 py-2.5 rounded-lg text-sm font-bold border"
+              <Link href="/login" className="mt-2 text-center px-4 py-2.5 rounded-lg text-sm font-bold border"
                 style={{ borderColor: '#FFE500', color: '#FFE500' }}
                 onClick={() => setMobileOpen(false)}>
-                Join Waitlist
+                Sign In
               </Link>
             </div>
           )}
